@@ -2,7 +2,6 @@
 this code is based on the example provided on the Apach Spark website: https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py
 '''
 
-
 # importing the necessary packages
 from pyspark.mllib.recommendation import ALS, MatrixFactorizationModel, Rating
 from pyspark import SparkConf, SparkContext
@@ -30,7 +29,8 @@ model = ALS.train(ratings, rank, numIterations)
 # creating a user-movie tuple from the ratings dataset to prepare for evaluation
 usersMovies = ratings.map(lambda p: (p[0], p[1]))
 # predicting the rating for a given user and movie
-predictions = model.predict(usersMovies).map(lambda r: ((r[0], r[1]), r[2]))
+# note that for pyspark.mllib.recommendation, the predictAll() method is equivalent to Scala's predict() method: https://spark.apache.org/docs/2.2.0/api/python/_modules/pyspark/mllib/recommendation.html
+predictions = model.predictAll(usersMovies).map(lambda r: ((r[0], r[1]), r[2]))
 # joining the predictions dataset with the the ratings dataset to compare how well the true rating compared to the predicted rating
 ratesAndPreds = ratings.map(lambda r: ((r[0], r[1]), r[2])).join(predictions)
 # evaluating the performance of the true rating compared to the predicted rating using MSE
