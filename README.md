@@ -53,12 +53,19 @@
 
 ## step-by-step guide for running Scala script
 
-##### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
+#### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
 
 
-1. From the GitHub repository, copy over the python script to the EMR cluster
+These steps below are for running on the GPU cluster. The only difference for running on the CPU cluster is the folder imported in *Step 1*
 
-   ```$ scp -i ~/.ssh/your_.pem_file_here python/recommender.py  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+1. From the GitHub repository, copy over the Scala script to the EMR cluster
+
+   ```$ scp -i ~/.ssh/your_.pem_file_here scala_GPU/*  hadoop@*your_Master_public_DNS_here*:/home/hadoop```
+   
+   Please note that if you are trying to run this on the CPU cluster, perform this command instead: 
+   
+   ```scp -i ~/.ssh/your_.pem_file scala_CPU/*  hadoop@your_Master_public_DNS:/home/hadoop```
+
    
 2. Log in to the EMR cluster again
 
