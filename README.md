@@ -13,7 +13,7 @@
 
    1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
-       $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .
+      ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
        
    2. If uploading from the GitHub repository
    
@@ -22,6 +22,8 @@
 4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
    When running the command $ hadoop fs -ls, you should see something similar to this
+   
+   
     
        
     
