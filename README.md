@@ -1,3 +1,3 @@
 # CS205_Recommender
 
-Test text
+## step-by-step guid for running Python
