@@ -29,7 +29,7 @@
 
       ``` spark-submit recommender.py ratings_20ml.csv ```
       
-6. When the code has completed, you should be able to see the output of the Mean Squared Error
+6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
 
    ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585237-59757e80-b0df-11eb-88d2-a3bd1ddd7704.png)
 
