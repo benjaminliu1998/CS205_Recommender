@@ -25,8 +25,14 @@
    
    ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
 
-   
-   
+5. You should now be able to run the below code and see results
+
+      ``` spark-submit recommender.py ratings_20ml.csv ```
+      
+6. When the code has completed, you should be able to see the output of the Mean Squared Error
+
+   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585237-59757e80-b0df-11eb-88d2-a3bd1ddd7704.png)
+
     
        
     
