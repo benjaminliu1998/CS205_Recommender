@@ -21,7 +21,7 @@
        
 4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
-   When running the command $ hadoop fs -ls, you should see something similar to this
+   When running the command ```$ hadoop fs -ls```, you should see something similar to this
    
    
     
