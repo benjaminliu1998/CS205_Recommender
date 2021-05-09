@@ -49,6 +49,8 @@
    <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
 
 
+
+
 ## step-by-step guide for running Scala script
 1. From the GitHub repository, copy over the python script to the EMR cluster
 
