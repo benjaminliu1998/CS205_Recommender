@@ -33,7 +33,10 @@
 
    ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585237-59757e80-b0df-11eb-88d2-a3bd1ddd7704.png)
 
-    
+7. To profile the code, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
+
+   <img width="427" alt="Screen Shot 2021-05-09 at 4 03 47 PM" src="https://user-images.githubusercontent.com/37121874/117585409-5038e180-b0e0-11eb-927c-522e27f5157d.png">
+
        
     
 
