@@ -31,7 +31,8 @@
       
 6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
 
-   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585237-59757e80-b0df-11eb-88d2-a3bd1ddd7704.png)
+   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585711-ddc90100-b0e1-11eb-88ee-5d93ba6a6d9a.png)
+
 
 7. To profile the code and calculate execution time, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
 
