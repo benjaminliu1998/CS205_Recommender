@@ -41,5 +41,8 @@
 
    <img width="1420" alt="Screen Shot 2021-05-09 at 4 10 15 PM" src="https://user-images.githubusercontent.com/37121874/117585589-45cb1780-b0e1-11eb-9f7c-0041a9b4654a.png">
 
-    
+9. We can now view how long each function call takes in order to run our script
+
+   <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
+
 
