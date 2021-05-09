@@ -19,5 +19,10 @@
    
        $ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop
        
+4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+
+   When running the command $ hadoop fs -ls, you should see something similar to this
+    
+       
     
 
