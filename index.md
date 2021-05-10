@@ -363,6 +363,8 @@ Please see Steps 7-9 of *step-by-step guide for running Python script* for how t
 
 # Results Tables
 
+Below are the results when using the CPU and GPU clusters on the 20M dataset for the Python and Scala recommender scripts
+
 ## CPU Results (20M Dataset)
 
 ### Python
