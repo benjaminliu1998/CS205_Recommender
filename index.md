@@ -306,16 +306,21 @@ These steps below are for running on the GPU cluster. The only difference for ru
    
 3. Download sbt to the EMR cluster
 
-   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo ```
    
-       sudo yum install sbt 
-   ```
-   
+   ``` sudo yum install sbt   ```   
  
 4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala] (http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
 
    ``` mkdir src; cd src; mkdir main; cd main; mkdir scala; cd scala; mv ../../../recommender.scala .; cd ~ ```
    
+   
+5. Check that the directory structure contains at least this information when running the below command from the home directory of the EMR cluster
+
+   ``` find . ```
+   
+   ![image10](https://user-images.githubusercontent.com/37121874/117648887-cbd87400-b15c-11eb-80d9-b3c030c7b79e.png)
+
 
 6. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
