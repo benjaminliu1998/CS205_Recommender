@@ -418,7 +418,7 @@ We ran the Python and Scala implementations on GPU and CPU using 1 executor. We 
 
 ![](/images/graph_2.png)
 
-If we run in parallel with more cores, GPU has much higher speedups than CPU because of its suitability in parallelized tasks. However, using more cores, if we look at the runtime comparison plots, GPU is not significantly faster than CPU. Due to the aforementioned drawbacks of GPU in recommender systems that it performs well speeding up the ALS part of the code but not the calculation of the MSE, GPU runtimes remain similar to CPU runtimes. When we reach 8 cores, the runtimes for GPU tend to become slower and the speedups decrease more drastically than CPU due to more synchronization overhead and GPU-CPU overhead.
+Now when looking at the speedup plots, we see that GPU has much higher speedup levels than CPU for 2 and 4 cores because of its suitability in parallelized tasks. When we reach 8 cores, the runtimes for GPU tend to become slower and the speedups decrease more drastically than CPU due to synchronization and GPU-CPU communication overhead. We also see the speedups for Python and Scala are very similar.
 
 ## Example Scala and Python Recommender Runtimes
 
