@@ -243,11 +243,11 @@ A final bottleneck that was pervasive throughout the testing process was the cos
 ## step-by-step guide for running Python script
 1. From the GitHub repository, copy over the python script to the EMR cluster
 
-   ```$ scp -i ~/.ssh/your_.pem_file_here python/recommender.py  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+   ```$ scp -i ~/.ssh/your_.pem_file_here python/recommender.py  hadoop@your_Master_public_DNS_here:/home/hadoop```
    
 2. Log in to the EMR cluster again
 
-   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
+   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@your_Master_public_DNS_here```
    
 3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
@@ -256,7 +256,7 @@ A final bottleneck that was pervasive throughout the testing process was the cos
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
 
        
-4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+4. Upload the dataset *ratings_20ml.csv* to the Hadoop file system
 
    When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
    
@@ -297,7 +297,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
 
 1. From the GitHub repository, copy over the Scala script to the EMR cluster
 
-   ```$ scp -i ~/.ssh/your_.pem_file_here scala_GPU/*  hadoop@*your_Master_public_DNS_here*:/home/hadoop```
+   ```$ scp -i ~/.ssh/your_.pem_file_here scala_GPU/*  hadoop@your_Master_public_DNS_here:/home/hadoop```
    
    Please note that if you are trying to run this on the CPU cluster, perform this command instead: 
    
@@ -306,7 +306,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
    
 2. Log in to the EMR cluster again
 
-   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
+   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@your_Master_public_DNS_here```
    
 3. Download sbt to the EMR cluster
 
