@@ -1,8 +1,8 @@
-Intro
+# Intro
 
 This project aims to compare how effectively scala and python implementations of an ALS movie recommender can be accelerated using GPUs. We use Spark MLlib to build the python and scala recommenders, and we use the NVIDIA spark-rapids package to integrate an AWS EMR cluster with GPUs. We also compare the speed-up between a cluster with GPUs and one with only CPUs. Lastly, we compared how well the equivalent Scala and Python implementations performed on 100k movie ratings, 20M movie ratings and 25M movie ratings to measure weak scaling.
 
-Problem Definition
+# Problem Definition
 
 Background to Recommender Systems
 Recommender systems address the problem of information overload. (Ullman, 2010) Unlike physical retailers, online outlets have a ‘long-tail’ of esoteric items and therefore cannot show the full range to users because they would be overwhelmed. This has led to the rise of recommender systems, which show only a subset of items to users based on a prediction of what the user wants. The huge number of items (whether it be information, goods or services) that online outlets provide requires large-scale parallel computation so that an appropriate subset of items can be offered to users in a reasonable timeframe.
