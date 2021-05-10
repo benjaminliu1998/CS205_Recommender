@@ -93,6 +93,9 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 4. Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
 5. In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
 
+```
+{
+
 [
 	{
 		"Classification":"spark",
@@ -162,6 +165,9 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 		}
 	}
 ]
+
+}
+```
 
 Cluster Image 1
 
