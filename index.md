@@ -23,7 +23,7 @@ A technique mainly used in the early days of recommender systems, content-based 
 ## Collaborative Filtering
 Collaborative filtering has been a popular method of designing recommender systems, especially since the Netflix Prize in 2009 (Koren, 2009). At the heart of collaborative filtering is the idea that the preferences of one user can be modelled based on information from the preferences of other users by calculating the rating similarity between users. 
 
-## ALS
+## Alternating Least Squares (ALS)
 
 ![](/images/als.png)
 
