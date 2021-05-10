@@ -1,3 +1,4 @@
 theme: jekyll-theme-slate
 title: Python vs Scala
 description: Comparing speed, scalability and performance for a distributed movie recommender using ALS
+show_downloads: true
