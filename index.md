@@ -283,7 +283,7 @@ A final bottleneck that was pervasive throughout the testing process was the cos
 
 ## step-by-step guide for running Scala script
 
-##### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
+While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
 
 
 These steps below are for running on the GPU cluster. The only difference for running on the CPU cluster is the folder imported in *Step 1*
@@ -354,7 +354,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
 Please see Steps 7-9 of *step-by-step guide for running Python script* for how to profile the code.
 
 
-#Results
+# Results
 
 ## 20M Dataset - GPU
 
