@@ -204,5 +204,197 @@ Cluster Image 2
 CPU_Cluster_1 image.
 
 # Scripts
-There were two main scripts utilized for this project: recommender.py and recommender.scala. As mentioned previously, the scripts were purposely made to be as similar as possible to best compare execution times. Both scripts contain the variable names and documentation except for where the language syntax differs, and are heavily drawn from the Apache Spark MLlib examples repository (Scala: https://github.com/apache/spark/blob/master/examples/src/main/scala/org/apache/spark/examples/mllib/RecommendationExample.scala Python: https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py). The high-level overview of the script is as follows: create a SparkContext, read in the .csv file, map the dataset to an RDD in the form required for the ALS() function. train the ALS on the RDD, make predictions based on the user-movie tuple, and compare the true user-movie ratings with the predicted user-movie ratings from the ALS using mean squared error. We recognize that a more robust ALS prediction model can be made which contains a train-test split, but our focus for this project was execution time comparisons; therefore, we were content as long as each script produced similar mean squared errors depending on the dataset used. 
+There were two main scripts utilized for this project: recommender.py and recommender.scala. As mentioned previously, the scripts were purposely made to be as similar as possible to best compare execution times. Both scripts contain the variable names and documentation except for where the language syntax differs, and are heavily drawn from the Apache Spark MLlib examples [repository](Scala: https://github.com/apache/spark/blob/master/examples/src/main/scala/org/apache/spark/examples/mllib/RecommendationExample.scala) [Python:](https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py). The high-level overview of the script is as follows: create a SparkContext, read in the .csv file, map the dataset to an RDD in the form required for the ALS() function. train the ALS on the RDD, make predictions based on the user-movie tuple, and compare the true user-movie ratings with the predicted user-movie ratings from the ALS using mean squared error. We recognize that a more robust ALS prediction model can be made which contains a train-test split, but our focus for this project was execution time comparisons; therefore, we were content as long as each script produced similar mean squared errors depending on the dataset used. 
+
 Two other scripts created for this project were the build.sbt used for the GPU, and the build.sbt used for the CPU. The extension .sbt stands for Simple Build Tool, and it is an open-source build tool for Scala and Java projects that allows for easily compiling and creating .jar files for projects. The build.sbt file contains metadata information about the project, as well as all dependencies that are required to run the code. We had to create two different versions due to different scala versions on the two different clusters (GPU had Scala version 2.12.10 available, while CPU had Scala version 2.11.12 available). We don’t expect there to be any differences in execution time as a result of these two different library versions for the two different clusters since no updates have been made to the ALS functions used between the two version times.
+
+## Challenges of MLlib, spark-rapids, and using Scala
+There were multiple challenges we faced throughout the course of this project. An initial difficulty was finding an application that would allow us to easily utilize Spark with GPUs on an AWS cluster. Our initial approach was to use the [IBM GPU Enabler](https://github.com/IBMSparkGPU/GPUEnabler) package which integrated with Spark, but it was a dormant library that hadn’t been updated since April 2018 and did not provide information about use on AWS. We also had concerns about spark-rapids being used with Scala (as outlined shortly), but after some testing we were able to figure it out. While spark-rapids did have a very well-detailed and documented start-up guide for [RAPIDS](https://nvidia.github.io/spark-rapids/docs/configs.html) on an AWS EMR cluster, there were many different configuration options that needed to be understood. Fortunately, we recognized that the “spark.executor.cores” and the “spark.task.resource.gpu.amount” were the two arguments that must be tuned in order to produce results with different numbers of executors. 
+The largest bottleneck for us actually occurred when creating the .jar file that is needed to run a Scala script. While there were many tutorials on how to do this ([here:](https://spark.apache.org/docs/latest/quick-start.html), [here:](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html, and here: https://www.youtube.com/watch?v=Y3jhtRhWsy8), none proved particularly effective in walking us through how to create a .sbt file that could be properly compiled with a .jar file that could then be executed. One of our hopes with these project is to actually create a Medium article that provides a step-by-step guide on how to easily create a Scala script using .sbt on an EMR cluster. 
+
+The next challenge was deciding on the hyperparameters for the ALS model since MLlib provided many different tuning options. In order for ALS matrix factorisation to converge it is important to iterate for fewer than 20 iterations in order to see convergence. Secondly, it is also important to set the rank (the number of latent factors used to predict empty values in the user-item matrix) equal to, or below 10. 
+Regarding the scripts, there was one particular spot that we could not exactly match the Python and Scala implementations. For the PySpark MLlib implementation, the function required a .predictAll() function when performing the prediction, while the Scala MLlib implementation provided a .predict() function. After examining the [code] (https://github.com/apache/spark/blob/master/python/pyspark/mllib/recommendation.py) it does not appear that the difference should cause any execution time changes as a result of the two different functions, but it is something we wanted to note since we could not reconcile this without changing a couple other parts of the Python or Scala script; this way we minimized potential differences between the code.
+
+A final bottleneck that was pervasive throughout the testing process was the cost for GPUs. A g4dn.2xlarge EC2 instance costs $0.752/hr for [On-Demand pricing] (https://aws.amazon.com/ec2/instance-types/g4/), so we did our best to be cognizant of our limited budget. However, each member unfortunately exceed the $100 credit limit in order to produce the most comprehensive results to showcase our project.
+
+## step-by-step guide for running Python script
+1. From the GitHub repository, copy over the python script to the EMR cluster
+
+   ```$ scp -i ~/.ssh/your_.pem_file_here python/recommender.py  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+   
+2. Log in to the EMR cluster again
+
+   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
+   
+3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+
+   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+    
+      ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
+       
+   2. If uploading from the GitHub repository
+   
+       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+       
+4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+
+   When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
+   
+   ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
+
+5. You should now be able to run the below code and see results
+
+      ``` spark-submit recommender.py ratings_20ml.csv ```
+      
+6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
+
+   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585779-41532e80-b0e2-11eb-8596-c940cadc6586.png)
+
+
+7. To profile the code and calculate execution time, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
+
+   <img width="427" alt="Screen Shot 2021-05-09 at 4 03 47 PM" src="https://user-images.githubusercontent.com/37121874/117585746-ff29ed00-b0e1-11eb-9c64-44fda0d612d4.png">
+
+   
+8. You can now calculate the execution time of the recommender system. We see that the script took 10 minutes 17 seconds to run (StartTime: Sat May 8 12:17:23 - FinishTime: Sat May 8 12:27:40). To profile the code, you can click on the *History* link under the *Tracking UI* column header.
+
+   <img width="1391" alt="Screen Shot 2021-05-09 at 4 10 15 PM" src="https://user-images.githubusercontent.com/37121874/117585813-7495bd80-b0e2-11eb-855f-237069b18867.png">
+
+
+9. We can now view how long each function call takes in order to run our script
+
+   <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
+
+
+
+
+## step-by-step guide for running Scala script
+
+#### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
+
+
+These steps below are for running on the GPU cluster. The only difference for running on the CPU cluster is the folder imported in *Step 1*
+
+1. From the GitHub repository, copy over the Scala script to the EMR cluster
+
+   ```$ scp -i ~/.ssh/your_.pem_file_here scala_GPU/*  hadoop@*your_Master_public_DNS_here*:/home/hadoop```
+   
+   Please note that if you are trying to run this on the CPU cluster, perform this command instead: 
+   
+   ```scp -i ~/.ssh/your_.pem_file scala_CPU/*  hadoop@your_Master_public_DNS:/home/hadoop```
+
+   
+2. Log in to the EMR cluster again
+
+   ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
+   
+3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+
+   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+    
+      ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
+       
+   2. If uploading from the GitHub repository
+   
+       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+       
+4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+
+   When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
+   
+   ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
+
+5. You should now be able to run the below code and see results
+
+      ``` spark-submit recommender.py ratings_20ml.csv ```
+      
+6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
+
+   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585779-41532e80-b0e2-11eb-8596-c940cadc6586.png)
+
+
+7. To profile the code and calculate execution time, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
+
+   <img width="427" alt="Screen Shot 2021-05-09 at 4 03 47 PM" src="https://user-images.githubusercontent.com/37121874/117585746-ff29ed00-b0e1-11eb-9c64-44fda0d612d4.png">
+
+   
+8. You can now calculate the execution time of the recommender system. We see that the script took 10 minutes 17 seconds to run (StartTime: Sat May 8 12:17:23 - FinishTime: Sat May 8 12:27:40). To profile the code, you can click on the *History* link under the *Tracking UI* column header.
+
+   <img width="1391" alt="Screen Shot 2021-05-09 at 4 10 15 PM" src="https://user-images.githubusercontent.com/37121874/117585813-7495bd80-b0e2-11eb-855f-237069b18867.png">
+
+
+9. We can now view how long each function call takes in order to run our script
+
+   <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
+
+
+#Results
+
+## 20M Dataset - GPU
+
+Overall it does not seem that using a GPU provided as much speed-up as we expected. We can see that moving from one core (threads within the worker node) to two or four cores reduces the runtime for both Python and Scala programs. However, the runtime of both Python and Scala programs when using the GPU cluster increases from 4 to 8 cores. This is an especially pronounced increase for the Python implementation. One explanation for this is that moving from 4 to 8 cores leads to larger overheads, which outweigh the benefit of using a GPU to accelerate calculations, particularly for ALS matrix factorization. Indeed, based on profiling the code it appears that an additional bottleneck is the calculation of mean squared error. This requires the aggregation of values across data on multiple nodes and thus requires a high degree of communication overhead. It may be that, although the GPU effectively speeds up one part of the application (the ALS), it actually adds to the overheads in subsequently processing the resulting distributed outputs in order to calculate the mean squared error.
+
+## 20M Dataset - CPU Results and comparison with GPU
+
+graph_1
+
+We run the Python and Scala implementations on GPU and CPU using 1 executor. Serially with 1 core, CPU is faster than GPU, both for Scala and Python. CPU consists of cores optimized for serial processing, which performs well on a single task run on 1 executor and 1 core. GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks. Thus when running the Python and Scala versions of the recommender algorithm serially, the CPU performs much faster. 
+
+graph_2
+
+If we run in parallel with more cores, GPU has much higher speedups than CPU because of its suitability in parallelized tasks. However, using more cores, if we look at the runtime comparison plots, GPU is not significantly faster than CPU. Due to the aforementioned drawbacks of GPU in recommender systems that it performs well speeding up the ALS part of the code but not the calculation of the MSE, GPU runtimes remain similar to CPU runtimes. When we reach 8 cores, the runtimes for GPU tend to become slower and the speedups decrease more drastically than CPU due to more synchronization overhead and GPU-CPU overhead.
+
+## Example Scala and Python Recommender Runtimes
+
+graph_3
+
+It is clear from the diagram above that a major bottleneck in both applications is the final step of the recommender, which involves aggregation and prediction. Although it appears that the matrix factorization operations are effectively distributed by MLlib in both applications, it seems that the major bottleneck is the calculation of predictions. Our results that the ALS Matrix factorization element of our application scales relatively effectively to larger datasets (20M and 25M); however, the aggregation and prediction part of the application does not scale well. Our initial assumptions before testing were that ALS matrix factorisation was the major bottleneck, and we did not consider there may be a second major bottleneck of aggregation of results that needed to be parallelised. This might be explained by the fact that Scala uses the Java Virtual Machine and communicates with Hadoop natively, which may be particularly important in an aggregation task or any task where distributed data needs to be rapidly aggregated in order to perform calculations.
+
+## Throughput
+Scala is designed primarily to distribute data across nodes. Therefore, speedup is, in some senses, a byproduct of the primary goal of Spark, which is to scale effectively (in terms of cost and speed) as datasets get large. In general we would expect the throughput of data to scale as the dataset size increases. Indeed, we would expect Scala to scale better than Python, as this is Scala’s primary function.
+
+We can see that the difference between Scala and Python is magnified as the datasets become larger. While the difference is less significant at the 3 MB level (the 100K dataset), it becomes very marked once we get to the 300+ MB level (the 20M dataset and 25M dataset). This suggests that the Scala implementation does indeed scale better in terms of throughput than the PySpark implementation. However, it is noticeable that the throughput declines from the 20M to 25M dataset. Thus it would be useful in future work to test whether this is a continuing decline by utilizing a larger dataset to observe if there is decreasing marginal scalability for the Scala implementation. One important point to note as well is that this decreasing scalability may be a result of the type of the application, as the fact that ALS Matrix Factorization does not scale well to large dataset sizes is widely observed in research. (Yu et. al., 2013)
+
+|  Dataset Size | Python (runtime/ throughput) | Scala (runtime/ throughput)| 
+|:--:|:--:|:--:|:--:|
+| 100k (2.3 MB) | 48 s, 0.048 MB/s |  42 s, 0.054 MB/s | 
+| 1M (12 MB) | 66 s, 0.18 MB/s |  47 s, 0.26 MB/s |
+| 20M (305.2 MB) | 632 s, 0.48 MB/s |  156 s, 1.96 MB/s |
+| 25M (390.2 MB) | 691, 0.56 MB/s |  216, 1.81 MB/s |
+
+## Scala and the future of heterogeneous and specialised programming languages
+In order to carry out this project, we had to use three new frameworks beyond our experience from CS205: Scala, NVIDIA spark-rapids and Spark MLlib. As mentioned previously, the most significant of these challenges was implementing both a Scala and Python version of the recommender. All of our team was new to Scala and therefore learning how to build an executable jar file was a prerequisite to our experiment. Indeed, this challenge also gave us insight into the potential future evolution of programming languages. Although more heterogeneous hardware is increasingly being used for specialised problems, our project focused on this use of a specialist programming language for big data analytics: Scala. Indeed, our experience of the difficulty of using Scala points to the potential trade-off between the time it takes to learn a new programming language and paradigm compared to the potential performance benefits. In contrast, this trade-off may be very different for heterogeneous hardware.
+
+A second challenge was utilising NVIDIA spark-rapids to accelerate the recommender with a GPU. Setting up the cluster using advanced settings on AWS, as well as understanding how to apportion sections of the GPUs available were both challenges. Indeed, it is notable that spark-rapids is part of a wider NVIDIA ecosystem, which includes infrastructure to support Dask and other frameworks. It is primarily concentrated on providing infrastructure for machine learning. Specifically, it seems to be primarily designed for integration with Python, which may be why some aspects of the infrastructure are written in this language. Therefore, although Scala is the native language of Spark, it is notable that other frameworks that can be integrated with spark, such as spark-rapids, are more geared towards PySpark, Pandas, and Scikit-learn users. This is a second reason to believe that the movement towards more specialised programming languages may be constrained. Therefore, this project suggests some reasons why the trend to heterogeneous hardware may be much stronger than the trend towards more heterogeneous programming languages and paradigms. 
+
+Based on our results, due to the large amount of distribution that is being performed under the hood with Spark, and the additional communication/synchronization that is required when utilizing a GPU, we’ve found that a GPU with Spark may not be the most effective solution when trying to decrease the execution time for a ALS recommendation model.
+
+## Next Steps
+In order to verify whether the speed-up observed using the Scala recommender can be attributed to Scala’s use of the Java Virtual Machine it would be useful to also run the same experiment with a Java recommender. Indeed, Scala was originally designed to address perceived problems with Java for big data analytics; therefore, we might expect Scala to perform better than Java in other ways, and it would be useful to explore how they differ in more detail.
+
+Second, it would be useful to further our understanding of the scalability of both the Python and Scala implementations by testing the recommenders on larger datasets. Specifically, we would have liked to generate a new dataset using fractal expansion and implement the recommenders on that dataset, but we were not able to implement this in the given time frame. Since it seems that the Scala throughput falls off slightly after the 20M dataset, it would be particularly useful to test the Scala recommenders on higher datasets and observe whether the perceived view that ALS recommenders cannot be effectively scaled to very large datasets is accurate.
+
+Third, our working hypothesis about the bottleneck of our application at the aggregation and prediction stage is that this part of the application is not effectively parallelised here. Since both Python and Scala are higher level languages and Spark is a higher-level abstraction where the handling of the distribution is all under-the-hood, it would be beneficial to explore our theory in greater detail and see if this is potentially parallelizable. 
+
+Lastly, it would be useful to implement recommenders using dataframes rather than RDDs, as Spark plan to phase out RDDs and it is thought that the dataframe framework in Spark is faster than the RDD framework. This is also a feature designed to integrate seamlessly with widely used libraries, such as pandas, and therefore it would be interesting to explore whether the use of dataframes, rather than RDDs, would change the relationship between the Python and Scala speedups that we observed in this project.
+
+## References
+
+Das, A., Xiangrui, M., Upadhyaya, I., Talwalkar, A. and Meng, X. (2016) [‘Collaborative Filtering as a Case-Study for Model Parallelism on Bulk Synchronous Systems.’, ACM.](https://www.cs.cmu.edu/~atalwalk/cikm17-case1629-cameraready.pdf)
+
+Dooms et. al. 2014, [‘In-memory, distributed content-based recommender system’, Journal of Intelligent Information Systems 42.](https://link.springer.com/article/10.1007/s10844-013-0276-1)
+
+Gandhi, P. (2018) [‘Apache Spark: Python vs. Scala’, KD.](https://www.kdnuggets.com/2018/05/apache-spark-python-scala.html#:~:text=Scala%20is%20a%20statically%20typed,easier%20than%20refactoring%20for%20Python.)
+
+Harper, F.M. & Konstan, J. A., (2015) [‘The MovieLens Datasets: History and Context’, ACM Transactions on Interactive Intelligent Systems](https://dl.acm.org/doi/10.1145/2827872)  
+
+Koren, Y. [The Belkor Solution to the Netflix Grand Prize](https://www.netflixprize.com/assets/GrandPrize2009_BPC_BellKor.pdf)
+
+Qiu, Y. (2016) [‘Recosystem: recommender system using parallel matrix factorization’](https://statr.me/2016/07/recommender-system-using-parallel-matrix-factorization/)
+
+Siomos, T. (2016) [‘Parallel Implementation of Basic Recommendation Algorithms’ , International Hellenic University.](https://repository.ihu.edu.gr/xmlui/bitstream/handle/11544/29406/Parallel%20Implementation%20of%20Basic%20Recommendation%20Algorithms.pdf?sequence=1)
+
+Ullman, J. D. et al, (2010) [Mining of Massive Datasets: Chapter 9: Recommendation Systems](http://infolab.stanford.edu/~ullman/mmds/ch9.pdf), p321.
+
+Yu et. al. (2013), [‘Parallel Matrix Factorization for Recommender Systems’](https://www.cs.utexas.edu/~inderjit/public_papers/kais-pmf.pdf), Knowledge and Information Systems.
+
