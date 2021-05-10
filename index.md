@@ -449,7 +449,10 @@ In order to carry out this project, we had to use three new frameworks beyond ou
 
 A second challenge was utilising NVIDIA spark-rapids to accelerate the recommender with a GPU. Setting up the cluster using advanced settings on AWS, as well as understanding how to apportion sections of the GPUs available were both time-consuming and tedious. It is notable that spark-rapids is part of a wider NVIDIA ecosystem, which includes infrastructure to support Dask and other frameworks and infrastructure for machine learning. Specifically, it seems to be primarily designed for integration with Python, which may be why some aspects of the code are written in this language. Therefore, although Scala is the native language of Spark, it is notable that other frameworks that can be integrated with Spark, such as spark-rapids, are more geared towards PySpark, Pandas, and Scikit-learn users. This is a second reason to believe that the movement towards more specialised programming languages may be constrained. Our project suggests some reasons why the trend to heterogeneous hardware may be much stronger than the trend towards more heterogeneous programming languages and paradigms. 
 
+# Conclusion
 Finally, based on our results, due to the large amount of distribution that is being performed under the hood with Spark, and the additional communication/synchronization that is required when utilizing a GPU, we’ve found that a GPU with Spark may not be the most effective solution when trying to decrease the execution time for a ALS recommendation model.
+
+NEED TO WRITE REST OF CONCLUSION HERE!
 
 # Next Steps
 In order to verify whether the speed-up observed using the Scala recommender can be attributed to Scala’s use of the Java Virtual Machine it would be useful to also run the same experiment with a Java recommender. Indeed, Scala was originally designed to address perceived problems with Java for big data analytics; therefore, we might expect Scala to perform better than Java in other ways, and it would be useful to explore how they differ in more detail.
