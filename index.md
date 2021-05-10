@@ -22,16 +22,20 @@ A technique mainly used in the early days of recommender systems, content-based 
 Collaborative filtering has been a popular method of designing recommender systems, especially since the Netflix Prize in 2009. (Koren, 2009) At the heart of Collaborative Filtering is the idea that the preferences of one user can be modelled based on information from the preferences of other users by calculating the rating similarity between users. 
 
 ## ALS
-In our application the sparsity and the high dimension of the rating data cause a problem when finding similarity between users. Thus collaborative filtering recommenders rely on matrix factorization to reduce the sparsity and the dimension of the ratings matrix. In this project, we explore the Alternating Least Square (ALS) matrix factorization algorithm. Compared to other matrix factorization algorithms such as Stochastic Gradient Descent, ALS is easier to parallelize, and requires less iterations to reach a good result. The ALS algorithm decomposes the rating matrix A into 2 matrices, W (user factors) and H (movie factors). A user’s rating on a movie will be encoded into latent features in these 2 factored matrices. The idea behind this is that if a user gives good ratings to Avengers, Wonder Woman and Iron Man, these 3 ratings should not be regarded as 3 separate preferences, but a general opinion that the user likes superhero movies. The objective of the ALS algorithm is to minimize the least squares error of the ratings as well as the regularizations (Yu et. al., 2013).
 
 ![](/images/als.png)
 
+In our application the sparsity and the high dimension of the rating data cause a problem when finding similarity between users. Thus collaborative filtering recommenders rely on matrix factorization to reduce the sparsity and the dimension of the ratings matrix. In this project, we explore the Alternating Least Square (ALS) matrix factorization algorithm. Compared to other matrix factorization algorithms such as Stochastic Gradient Descent, ALS is easier to parallelize, and requires less iterations to reach a good result. The ALS algorithm decomposes the rating matrix A into 2 matrices, W (user factors) and H (movie factors). A user’s rating on a movie will be encoded into latent features in these 2 factored matrices. The idea behind this is that if a user gives good ratings to Avengers, Wonder Woman and Iron Man, these 3 ratings should not be regarded as 3 separate preferences, but a general opinion that the user likes superhero movies. 
+
+The objective of the ALS algorithm is to minimize the least squares error of the ratings as well as the regularizations (Yu et. al., 2013).
+
 ![](/images/als_equation.png)
 
-![](/images/als_equation_2.png)
+W and H are updated separately by fixing one and updating the other. Below is the updating step for a row in W.
 
-![](/images/als_equation_3.png)
+$$w_i^* = (H^T_{\Omega_i} H_{\Omega_i} + \lambda I)^-1 H^T \alpha_i$$
 
+The complexity of ALS is $O(|\Omega|k^2 + (m+n)k^3)$, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
 
 # Big Data and Compute Requirements
@@ -97,11 +101,11 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 ## Setting up a spark-rapids Cluster with GPU
 
 ### Software and Configuration
-1. Go to AWS EMR.
-2. Select ‘create cluster’.
-3. Select ‘Advanced Options’.
-4. Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
-5. In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
+* Go to AWS EMR.
+* Select ‘create cluster’.
+* Select ‘Advanced Options’.
+* Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
+* In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
 
 ```
 {
@@ -183,12 +187,12 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 
 ![](/images/cluster_2.png)
 
-6. Select the default network and subnet.
-7. Change the instance type to g4dn.2xlarge. Select one core and one task instance.
+* Select the default network and subnet.
+* Change the instance type to g4dn.2xlarge. Select one core and one task instance.
 
 ### General Cluster Settings
-8. Add a cluster name and an S3 bucket to write cluster logs to.
-9. Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
+* Add a cluster name and an S3 bucket to write cluster logs to.
+* Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
 
 	Alternatively, you could use the script below in your own s3 bucket:
 
@@ -200,9 +204,9 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
   sudo chmod a+rwx -R /sys/fs/cgroup/devices
 
 ### Security Settings
-10. Select an EC2 key pair.
-11. In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
-12. Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
+* Select an EC2 key pair.
+* In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
+* Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
 
 [See Spark-Rapids documentation for further details](https://nvidia.github.io/spark-rapids/docs/get-started/getting-started-aws-emr.html)
 
@@ -217,7 +221,7 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 7. Go to EC2 -> Instances, find your master node instance, and confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
 8. SSH into the Master Node of the Cluster
 
-![](/images/cput_cluster_1.png)
+![](/images/cpu_cluster_1.png)
 
 # Scripts
 There were two main scripts utilized for this project: recommender.py and recommender.scala. As mentioned previously, the scripts were purposely made to be as similar as possible to best compare execution times. Both scripts contain the variable names and documentation except for where the language syntax differs, and are heavily drawn from the Apache Spark MLlib examples [repository](Scala: https://github.com/apache/spark/blob/master/examples/src/main/scala/org/apache/spark/examples/mllib/RecommendationExample.scala) [Python:](https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py). The high-level overview of the script is as follows: create a SparkContext, read in the .csv file, map the dataset to an RDD in the form required for the ALS() function. train the ALS on the RDD, make predictions based on the user-movie tuple, and compare the true user-movie ratings with the predicted user-movie ratings from the ALS using mean squared error. We recognize that a more robust ALS prediction model can be made which contains a train-test split, but our focus for this project was execution time comparisons; therefore, we were content as long as each script produced similar mean squared errors depending on the dataset used. 
@@ -226,7 +230,7 @@ Two other scripts created for this project were the build.sbt used for the GPU, 
 
 ## Challenges of MLlib, spark-rapids, and using Scala
 There were multiple challenges we faced throughout the course of this project. An initial difficulty was finding an application that would allow us to easily utilize Spark with GPUs on an AWS cluster. Our initial approach was to use the [IBM GPU Enabler](https://github.com/IBMSparkGPU/GPUEnabler) package which integrated with Spark, but it was a dormant library that hadn’t been updated since April 2018 and did not provide information about use on AWS. We also had concerns about spark-rapids being used with Scala (as outlined shortly), but after some testing we were able to figure it out. While spark-rapids did have a very well-detailed and documented start-up guide for [RAPIDS](https://nvidia.github.io/spark-rapids/docs/configs.html) on an AWS EMR cluster, there were many different configuration options that needed to be understood. Fortunately, we recognized that the “spark.executor.cores” and the “spark.task.resource.gpu.amount” were the two arguments that must be tuned in order to produce results with different numbers of executors. 
-The largest bottleneck for us actually occurred when creating the .jar file that is needed to run a Scala script. While there were many tutorials on how to do this ([here:](https://spark.apache.org/docs/latest/quick-start.html), [here:](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html, and here: https://www.youtube.com/watch?v=Y3jhtRhWsy8), none proved particularly effective in walking us through how to create a .sbt file that could be properly compiled with a .jar file that could then be executed. One of our hopes with these project is to actually create a Medium article that provides a step-by-step guide on how to easily create a Scala script using .sbt on an EMR cluster. 
+The largest bottleneck for us actually occurred when creating the .jar file that is needed to run a Scala script. While there were many tutorials on how to do this (for example [here:](https://spark.apache.org/docs/latest/quick-start.html) and [here:](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html, and here: https://www.youtube.com/watch?v=Y3jhtRhWsy8), none proved particularly effective in walking us through how to create a .sbt file that could be properly compiled with a .jar file that could then be executed. One of our hopes with these project is to actually create a Medium article that provides a step-by-step guide on how to easily create a Scala script using .sbt on an EMR cluster. 
 
 The next challenge was deciding on the hyperparameters for the ALS model since MLlib provided many different tuning options. In order for ALS matrix factorisation to converge it is important to iterate for fewer than 20 iterations in order to see convergence. Secondly, it is also important to set the rank (the number of latent factors used to predict empty values in the user-item matrix) equal to, or below 10. 
 Regarding the scripts, there was one particular spot that we could not exactly match the Python and Scala implementations. For the PySpark MLlib implementation, the function required a .predictAll() function when performing the prediction, while the Scala MLlib implementation provided a .predict() function. After examining the [code] (https://github.com/apache/spark/blob/master/python/pyspark/mllib/recommendation.py) it does not appear that the difference should cause any execution time changes as a result of the two different functions, but it is something we wanted to note since we could not reconcile this without changing a couple other parts of the Python or Scala script; this way we minimized potential differences between the code.
@@ -244,13 +248,10 @@ A final bottleneck that was pervasive throughout the testing process was the cos
    
 3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
-   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+    If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
-       
-   2. If uploading from the GitHub repository
-   
-       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+
        
 4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
@@ -286,7 +287,7 @@ A final bottleneck that was pervasive throughout the testing process was the cos
 
 ## step-by-step guide for running Scala script
 
-#### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
+While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
 
 
 These steps below are for running on the GPU cluster. The only difference for running on the CPU cluster is the folder imported in *Step 1*
@@ -304,47 +305,101 @@ These steps below are for running on the GPU cluster. The only difference for ru
 
    ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
    
-3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+3. Download sbt to the EMR cluster
 
-   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo ```
+   
+   ``` sudo yum install sbt   ```   
+ 
+4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala] (http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
+
+   ``` mkdir src; cd src; mkdir main; cd main; mkdir scala; cd scala; mv ../../../recommender.scala .; cd ~ ```
+   
+   
+5. Check that the directory structure contains at least this information when running the below command from the home directory of the EMR cluster
+
+   ``` find . ```
+   
+   ![mffwf](https://user-images.githubusercontent.com/37121874/117648995-f62a3180-b15c-11eb-9cf3-28ad5da6e0fc.png)
+
+
+6. Run the command 
+
+   ``` sbt package ```
+   
+   1. This compiles the recommender.scala project (in this case, the build.sbt and recommender.scala script) and packages it into a .jar (Java ARchive) file, which can then be executed by the Scala interpreter
+   2. To make sure it has compiled successfully, you should see something similar to this
+ 
+<img width="602" alt="image5" src="https://user-images.githubusercontent.com/37121874/117649225-43a69e80-b15d-11eb-92a5-d07e6ae42d1d.png">
+
+
+7. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+
+   If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
        
-   2. If uploading from the GitHub repository
-   
-       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
-       
-4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+8. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
    When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
    
    ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
 
-5. You should now be able to run the below code and see results
+9. You should now be able to run the below code and see results
 
-      ``` spark-submit recommender.py ratings_20ml.csv ```
+      ``` spark-submit --class "RecommenderScala" target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv ```
       
-6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
+10. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS Scala Recommender
 
-   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585779-41532e80-b0e2-11eb-8596-c940cadc6586.png)
-
-
-7. To profile the code and calculate execution time, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
-
-   <img width="427" alt="Screen Shot 2021-05-09 at 4 03 47 PM" src="https://user-images.githubusercontent.com/37121874/117585746-ff29ed00-b0e1-11eb-9c64-44fda0d612d4.png">
-
-   
-8. You can now calculate the execution time of the recommender system. We see that the script took 10 minutes 17 seconds to run (StartTime: Sat May 8 12:17:23 - FinishTime: Sat May 8 12:27:40). To profile the code, you can click on the *History* link under the *Tracking UI* column header.
-
-   <img width="1391" alt="Screen Shot 2021-05-09 at 4 10 15 PM" src="https://user-images.githubusercontent.com/37121874/117585813-7495bd80-b0e2-11eb-855f-237069b18867.png">
+   ![image7](https://user-images.githubusercontent.com/37121874/117649810-f4ad3900-b15d-11eb-9c57-ef44890688ef.png)
 
 
-9. We can now view how long each function call takes in order to run our script
 
-   <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
+Please see Steps 7-9 of *step-by-step guide for running Python script* for how to profile the code.
 
 
-#Results
+# Results Tables
+
+## CPU Results (20M Dataset)
+
+### Python
+
+Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | --- | ---
+0.543 | 721 | N/A | spark-submit --num-executors 1 --executor-cores 1 recommender.py ratings_20ml.csv
+0.544 | 571 | 1.26 | spark-submit --num-executors 1 --executor-cores 2 recommender.py ratings_20ml.csv
+0.542 | 561 | 1.28 | spark-submit --num-executors 1 --executor-cores 4 recommender.py ratings_20ml.csv
+0.543 | 482 | 1.49 | spark-submit --num-executors 1 --executor-cores 8 recommender.py ratings_20ml.csv
+
+### Scala
+
+Mean Squared Error | Execution Time (seconds) | Speedup | Scala Command
+--- | --- | --- | ---
+0.545 | 139 | N/A | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.545 | 109 | 1.28 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 2 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.543 | 108 | 1.29 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 4 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.544 | 115 | 1.21 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 8 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+
+## GPU Results (20M Dataset)
+
+### Python
+
+Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | --- | ---
+0.543 | 961 | N/A | spark-submit --executor-cores 1 --conf spark.task.resource.gpu.amount=1 recommender.py ratings_20ml.csv
+0.545 | 554 | 1.73 | spark-submit --executor-cores 2 --conf spark.task.resource.gpu.amount=0.5 recommender.py ratings_20ml.csv
+0.545 | 503 | 1.91 | spark-submit --executor-cores 4 --conf spark.task.resource.gpu.amount=0.25 recommender.py ratings_20ml.csv
+0.545 | 704 | 1.37 | spark-submit --executor-cores 8 --conf spark.task.resource.gpu.amount=0.125 recommender.py ratings_20ml.csv
+
+### Scala
+
+Mean Squared Error | Execution Time (seconds) | Speedup | Scala Command
+--- | --- | --- | ---
+0.543 | 221 | N/A | spark-submit --class "RecommenderScala" --executor-cores 1 --conf spark.task.resource.gpu.amount=1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.544 | 132 | 1.67 | spark-submit --class "RecommenderScala" --executor-cores 2 --conf spark.task.resource.gpu.amount=0.5  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.543 | 104 | 2.13 | spark-submit --class "RecommenderScala" --executor-cores 4 --conf spark.task.resource.gpu.amount=0.25  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+0.541 | 147 | 1.50 | spark-submit --class "RecommenderScala" --executor-cores 8 --conf spark.task.resource.gpu.amount=0.125  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv ratings_20ml.csv
+
 
 ## 20M Dataset - GPU
 
