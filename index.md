@@ -414,7 +414,7 @@ Overall it does not seem that using a GPU provided as much speed-up as we expect
 
 ![](/images/graph_1.png)
 
-We run the Python and Scala implementations on GPU and CPU using 1 executor. Serially with 1 core, CPU is faster than GPU, both for Scala and Python. CPU consists of cores optimized for serial processing, which performs well on a single task run on 1 executor and 1 core. GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks. Thus when running the Python and Scala versions of the recommender algorithm serially, the CPU performs much faster. 
+We ran the Python and Scala implementations on GPU and CPU using 1 executor. We see that when the program is run serially with 1 thread, CPU is faster than GPU for both Scala and Python. If we look at the runtime comparison plots, using more cores does not decrease GPU execution time significantly against CPU execution time. This makes sense since the CPU consists of cores optimized for serial processing which perform well on a single task run on 1 executor and 1 core, while GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks. We also see that Scala is significantly faster than Python, as we’ll discuss shortly.
 
 ![](/images/graph_2.png)
 
