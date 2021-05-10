@@ -454,6 +454,8 @@ Second, it would be useful to further our understanding of the scalability of bo
 
 Third, our working hypothesis about the bottleneck of our application at the aggregation and prediction stage is that this part of the application is not effectively parallelised here. Since both Python and Scala are higher level languages and Spark is a higher-level abstraction where the handling of the distribution is all under-the-hood, it would be beneficial to explore our theory in greater detail and see if this is potentially parallelizable. 
 
+Fourth, it would be interesting to see results when utilizing multiple CPUs/GPUs. Due mainly to budget constriants we were not able to horizontally scale our architecture in the way we would like, so future work would examine results when we add instances to the clusters.
+
 Lastly, it would be useful to implement recommenders using dataframes rather than RDDs, as Spark plan to phase out RDDs and it is thought that the dataframe framework in Spark is faster than the RDD framework. This is also a feature designed to integrate seamlessly with widely used libraries, such as pandas, and therefore it would be interesting to explore whether the use of dataframes, rather than RDDs, would change the relationship between the Python and Scala speedups that we observed in this project.
 
 ## References
