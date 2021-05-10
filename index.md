@@ -171,9 +171,9 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 }
 ```
 
-Cluster Image 1
+![](/images/cluster_1.png)
 
-Cluster Image 2
+![](/images/cluster_2.png)
 
 6. Select the default network and subnet.
 7. Change the instance type to g4dn.2xlarge. Select one core and one task instance.
@@ -209,7 +209,7 @@ Cluster Image 2
 7. Go to EC2 -> Instances, find your master node instance, and confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
 8. SSH into the Master Node of the Cluster
 
-CPU_Cluster_1 image.
+![](/images/cput_cluster_1.png)
 
 # Scripts
 There were two main scripts utilized for this project: recommender.py and recommender.scala. As mentioned previously, the scripts were purposely made to be as similar as possible to best compare execution times. Both scripts contain the variable names and documentation except for where the language syntax differs, and are heavily drawn from the Apache Spark MLlib examples [repository](Scala: https://github.com/apache/spark/blob/master/examples/src/main/scala/org/apache/spark/examples/mllib/RecommendationExample.scala) [Python:](https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py). The high-level overview of the script is as follows: create a SparkContext, read in the .csv file, map the dataset to an RDD in the form required for the ALS() function. train the ALS on the RDD, make predictions based on the user-movie tuple, and compare the true user-movie ratings with the predicted user-movie ratings from the ALS using mean squared error. We recognize that a more robust ALS prediction model can be made which contains a train-test split, but our focus for this project was execution time comparisons; therefore, we were content as long as each script produced similar mean squared errors depending on the dataset used. 
@@ -344,17 +344,17 @@ Overall it does not seem that using a GPU provided as much speed-up as we expect
 
 ## 20M Dataset - CPU Results and comparison with GPU
 
-graph_1
+![](/images/graph_1.png)
 
 We run the Python and Scala implementations on GPU and CPU using 1 executor. Serially with 1 core, CPU is faster than GPU, both for Scala and Python. CPU consists of cores optimized for serial processing, which performs well on a single task run on 1 executor and 1 core. GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks. Thus when running the Python and Scala versions of the recommender algorithm serially, the CPU performs much faster. 
 
-graph_2
+![](/images/graph_2.png)
 
 If we run in parallel with more cores, GPU has much higher speedups than CPU because of its suitability in parallelized tasks. However, using more cores, if we look at the runtime comparison plots, GPU is not significantly faster than CPU. Due to the aforementioned drawbacks of GPU in recommender systems that it performs well speeding up the ALS part of the code but not the calculation of the MSE, GPU runtimes remain similar to CPU runtimes. When we reach 8 cores, the runtimes for GPU tend to become slower and the speedups decrease more drastically than CPU due to more synchronization overhead and GPU-CPU overhead.
 
 ## Example Scala and Python Recommender Runtimes
 
-graph_3
+![](/images/graph_3.png)
 
 It is clear from the diagram above that a major bottleneck in both applications is the final step of the recommender, which involves aggregation and prediction. Although it appears that the matrix factorization operations are effectively distributed by MLlib in both applications, it seems that the major bottleneck is the calculation of predictions. Our results that the ALS Matrix factorization element of our application scales relatively effectively to larger datasets (20M and 25M); however, the aggregation and prediction part of the application does not scale well. Our initial assumptions before testing were that ALS matrix factorisation was the major bottleneck, and we did not consider there may be a second major bottleneck of aggregation of results that needed to be parallelised. This might be explained by the fact that Scala uses the Java Virtual Machine and communicates with Hadoop natively, which may be particularly important in an aggregation task or any task where distributed data needs to be rapidly aggregated in order to perform calculations.
 
@@ -369,6 +369,8 @@ We can see that the difference between Scala and Python is magnified as the data
 | 1M (12 MB) | 66 s, 0.18 MB/s |  47 s, 0.26 MB/s |
 | 20M (305.2 MB) | 632 s, 0.48 MB/s |  156 s, 1.96 MB/s |
 | 25M (390.2 MB) | 691, 0.56 MB/s |  216, 1.81 MB/s |
+
+![](/images/graph_4.png)
 
 ## Scala and the future of heterogeneous and specialised programming languages
 In order to carry out this project, we had to use three new frameworks beyond our experience from CS205: Scala, NVIDIA spark-rapids and Spark MLlib. As mentioned previously, the most significant of these challenges was implementing both a Scala and Python version of the recommender. All of our team was new to Scala and therefore learning how to build an executable jar file was a prerequisite to our experiment. Indeed, this challenge also gave us insight into the potential future evolution of programming languages. Although more heterogeneous hardware is increasingly being used for specialised problems, our project focused on this use of a specialist programming language for big data analytics: Scala. Indeed, our experience of the difficulty of using Scala points to the potential trade-off between the time it takes to learn a new programming language and paradigm compared to the potential performance benefits. In contrast, this trade-off may be very different for heterogeneous hardware.
