@@ -360,6 +360,13 @@ Please see Steps 7-9 of *step-by-step guide for running Python script* for how t
 
 # Results
 
+## CPU Results
+
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | ---
+20M | 0.5431788776723693 | 721 | N/A | spark-submit --num-executors 1 --executor-cores 1 recommender.py ratings_20ml.csv
+1 | 2 | 3
+
 ## 20M Dataset - GPU
 
 Overall it does not seem that using a GPU provided as much speed-up as we expected. We can see that moving from one core (threads within the worker node) to two or four cores reduces the runtime for both Python and Scala programs. However, the runtime of both Python and Scala programs when using the GPU cluster increases from 4 to 8 cores. This is an especially pronounced increase for the Python implementation. One explanation for this is that moving from 4 to 8 cores leads to larger overheads, which outweigh the benefit of using a GPU to accelerate calculations, particularly for ALS matrix factorization. Indeed, based on profiling the code it appears that an additional bottleneck is the calculation of mean squared error. This requires the aggregation of values across data on multiple nodes and thus requires a high degree of communication overhead. It may be that, although the GPU effectively speeds up one part of the application (the ALS), it actually adds to the overheads in subsequently processing the resulting distributed outputs in order to calculate the mean squared error.
