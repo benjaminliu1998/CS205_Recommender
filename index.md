@@ -1,3 +1,5 @@
+
+
 # Intro
 
 This project aims to compare how effectively scala and python implementations of an ALS movie recommender can be accelerated using GPUs. We use Spark MLlib to build the python and scala recommenders, and we use the NVIDIA spark-rapids package to integrate an AWS EMR cluster with GPUs. We also compare the speed-up between a cluster with GPUs and one with only CPUs. Lastly, we compared how well the equivalent Scala and Python implementations performed on 100k movie ratings, 20M movie ratings and 25M movie ratings to measure weak scaling.
