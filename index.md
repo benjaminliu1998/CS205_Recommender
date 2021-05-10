@@ -200,13 +200,17 @@ GPU Cluster Details:
 9. Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
 
 	Alternatively, you could use the script below in your own s3 bucket:
+	
+	
 ```
+
 	#!/bin/bash
  
   	set -ex
  
   	sudo chmod a+rwx -R /sys/fs/cgroup/cpu,cpuacct
   	sudo chmod a+rwx -R /sys/fs/cgroup/devices
+	
 ```
 ### Security Settings
 10. Select an EC2 key pair.
