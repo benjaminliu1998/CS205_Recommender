@@ -41,7 +41,7 @@ The complexity of ALS is
 
 ![](/images/als_equation_3.png)
 
-, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
+, where Ω is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
 
 # Big Data and Compute Requirements
