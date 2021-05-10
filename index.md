@@ -362,7 +362,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
    
    ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
 
-9. You should now be able to run the below code and see results
+9. You should now be able to run the below code and see results (please confirm the location and name of the .jar file is the same)
 
       ``` spark-submit --class "RecommenderScala" target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv ```
       
