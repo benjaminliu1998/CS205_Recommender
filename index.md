@@ -68,22 +68,22 @@ MovieLens datasets are a series of stable benchmark datasets created by GroupLen
 Some of the new MovieLens datasets include tag genome data with relevance scores. However, we do not use this data for our recommender. The attributes that we use in order to utilize ALS to compute the preferences of users are ‘userId’, ‘rating’ and ‘movieId’. 
 
 ## Size
-For all datasets we preprocessed the files to remove the header and any columns other than ‘userId’, ‘rating’ and ‘movieId’ because these were not relevant for the recommender; specifically, we removed the ‘timestamp’ column as it caused errors when trying to run the Scala script. For comparing GPU and CPU clusters, we used the MovieLens 20M ratings datasetU; it was released in 2015 and updated in 2016.
+For all datasets we preprocessed the files to remove the header and any columns other than ‘userId’, ‘rating’ and ‘movieId’ because these were not relevant for the recommender; specifically, we removed the ‘timestamp’ column as it caused errors when trying to run the Scala script. For comparing GPU and CPU clusters, we used the MovieLens 20M ratings dataset; it was released in 2015 and updated in 2016.
 
 For measuring the recommenders on different dataset sizes we vary the size of the dataset between 100k, 1M, 20M and 25M. They have the following characteristics:
 
-   MovieLens 100K  (2.3 MB): 100,000 ratings from 1000 users on 1700 movies
-   MovieLens 1M dataset (12 MB): 1 million ratings from 6000 users on 4000 movies
-   MovieLens 20M dataset (305.2 MB): 20 million ratings on 27,000 movies by 138,000 users
-   MovieLens 25M dataset (390.2 MB): 25 million ratings on 62,000 movies by 162,000 users.
+   * MovieLens 100K  (2.3 MB): 100,000 ratings from 1000 users on 1700 movies
+   * MovieLens 1M dataset (12 MB): 1 million ratings from 6000 users on 4000 movies
+   * MovieLens 20M dataset (305.2 MB): 20 million ratings on 27,000 movies by 138,000 users
+   * MovieLens 25M dataset (390.2 MB): 25 million ratings on 62,000 movies by 162,000 users.
 
-How we distribute ALS Matrix Factorization: MLlib and parallelising ALS matrix factorization for Collaborative Filtering
+## How we distribute ALS Matrix Factorization: MLlib and parallelising ALS matrix factorization for Collaborative Filtering
 
-MLlib is Apache Spark’s machine learning library, which made it an easy decision to use for our solution. MLlib can be easily integrated to use with a cluster and EC2 instances, and it is a Spark Library.
+MLlib is Apache Spark’s machine learning library, which made it an easy decision to use for our solution. MLlib can be easily integrated with a cluster and EC2 instances, and it is a Spark Library.
 
-The central scalability problem, as outlined above, is not the parallelisation of ALS as such, but the parallelisation of ALS with large scale data. When the rows that need to iterated over are very large, the task of distributing the data becomes much more difficult. A central reason for using MLlib is to address this challenge through a principled approach. Indeed, there are multiple aspects of the design of MLlib that allow effective implementation of distributed ALS matrix factorisation on large datasets. For example, ‘hybrid partitioning’ is used to decrease the amount of shuffling that happens at each iteration. Critically, ‘block-to-block join’ effectively distributes the user and item matrices across nodes so that you can also decrease the amount of overhead from partitioning (Das et. al., 2016). Specifically, matrices are partitioned into in-blocks and out-blocks in a way such that the parts of each matrice needed for each iteration is accessible.
+The central scalability problem, as outlined above, is not the parallelization of ALS as such, but the parallelization of ALS with large scale data. When the rows that need to be iterated over are very large, the task of distributing the data becomes much more difficult. A central reason for using MLlib is to address this challenge through a principled approach. Indeed, there are multiple aspects of the design of MLlib that allow effective implementation of distributed ALS matrix factorisation on large datasets. ‘Hybrid partitioning’ is used to decrease the amount of shuffling that happens at each iteration, and ‘block-to-block join’ effectively distributes the user and item matrices across nodes so that you can also decrease the amount of overhead from partitioning (Das et. al., 2016). Specifically, matrices are partitioned into in-blocks and out-blocks in a way such that the parts of each matrice needed for each iteration is accessible.
 
-Both the Scala and Python recommenders use MLlib and are very similar. This was a purposeful decision because we wanted to compare the two recommenders and therefore wanted to make them as similar as possible. Therefore it was important to use the same Spark library (MLlib) for both.
+Both the Scala and Python recommenders use MLlib and are very similar. This was a purposeful decision because we wanted to compare the two recommenders and therefore wanted to make them as similar as possible. It was also important to use the same Spark library (MLlib) for both.
 
 ## Accelerating Our Application
 
