@@ -26,6 +26,14 @@ In our application the sparsity and the high dimension of the rating data cause 
 
 ![](/images/als.png)
 
+![](/images/als_equation.png)
+
+![](/images/als_equation_2.png)
+
+![](/images/als_equation_3.png)
+
+
+
 # Big Data and Compute Requirements
 
 The datasets used include up to 25 million movie recommendations, and therefore ALS matrix factorisation can take a long time. As mentioned above, if collaborative filtering is to be a viable (and potentially more interpretable) alternative to neural network-based recommenders, it is important that this application can be scaled to large datasets and perform ALS matrix factorisation quickly. Indeed, as users can come on board a platform very fast, it is critical that any recommender system used at scale would have the capacity to compute user preferences very fast.
