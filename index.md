@@ -306,8 +306,10 @@ These steps below are for running on the GPU cluster. The only difference for ru
    
 3. Download sbt to the EMR cluster
 
-   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo ```
-   ```    sudo yum install sbt ```
+   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+   
+       sudo yum install sbt 
+   ```
    
  
 4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala] (http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
