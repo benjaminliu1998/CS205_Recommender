@@ -102,11 +102,11 @@ Cluster Details:
 ## Setting up a spark-rapids Cluster with GPU
 
 ### Software and Configuration
-* Go to AWS EMR.
-* Select ‘create cluster’.
-* Select ‘Advanced Options’.
-* Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
-* In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
+1. Go to AWS EMR.
+2. Select ‘create cluster’.
+3. Select ‘Advanced Options’.
+4. Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
+5. In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
 
 ```
 {
@@ -188,12 +188,12 @@ Cluster Details:
 
 ![](/images/cluster_2.png)
 
-* Select the default network and subnet.
-* Change the instance type to g4dn.2xlarge. Select one core and one task instance.
+6. Select the default network and subnet.
+7. Change the instance type to g4dn.2xlarge. Select one core and one task instance.
 
 ### General Cluster Settings
-* Add a cluster name and an S3 bucket to write cluster logs to.
-* Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
+8. Add a cluster name and an S3 bucket to write cluster logs to.
+9. Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
 
 	Alternatively, you could use the script below in your own s3 bucket:
 
@@ -205,9 +205,9 @@ Cluster Details:
   sudo chmod a+rwx -R /sys/fs/cgroup/devices
 
 ### Security Settings
-* Select an EC2 key pair.
-* In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
-* Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
+10. Select an EC2 key pair.
+11. In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
+12. Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
 
 [See Spark-Rapids documentation for further details](https://nvidia.github.io/spark-rapids/docs/get-started/getting-started-aws-emr.html)
 
