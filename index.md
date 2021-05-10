@@ -33,7 +33,7 @@ The objective of the ALS algorithm is to minimize the least squares error of the
 
 W and H are updated separately by fixing one and updating the other. Below is the updating step for a row in W.
 
-![formula](https://render.githubusercontent.com/render/math?math=w_i^* = (H^T_{\Omega_i} H_{\Omega_i} + \lambda I)^-1 H^T \alpha_i)
+$$w_i^* = (H^T_{\Omega_i} H_{\Omega_i} + \lambda I)^-1 H^T \alpha_i$$
 
 The complexity of ALS is $O(|\Omega|k^2 + (m+n)k^3)$, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
@@ -358,14 +358,43 @@ These steps below are for running on the GPU cluster. The only difference for ru
 Please see Steps 7-9 of *step-by-step guide for running Python script* for how to profile the code.
 
 
-# Results
+# Results Tables
 
-## CPU Results
+## CPU Results - Python
 
 Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
 --- | --- | --- | --- | ---
-20M | 0.5431788776723693 | 721 | N/A | spark-submit --num-executors 1 --executor-cores 1 recommender.py ratings_20ml.csv
-20M | 0.5440616254177953 | 571 | 1.26 | spark-submit --num-executors 1 --executor-cores 2 recommender.py
+20M | 0.543 | 721 | N/A | spark-submit --num-executors 1 --executor-cores 1 recommender.py ratings_20ml.csv
+20M | 0.544 | 571 | 1.26 | spark-submit --num-executors 1 --executor-cores 2 recommender.py ratings_20ml.csv
+20M | 0.542 | 561 | 1.28 | spark-submit --num-executors 1 --executor-cores 4 recommender.py ratings_20ml.csv
+20M | 0.543 | 482 | 1.49 | spark-submit --num-executors 1 --executor-cores 8 recommender.py ratings_20ml.csv
+
+## CPU Results - Scala
+
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | --- | --- | ---
+20M | 0.545 | 139 | N/A | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.545 | 109 | 1.28 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 2 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.543 | 108 | 1.29 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 4 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.544 | 115 | 1.21 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 8 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+
+## GPU Results - Python
+
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | --- | --- | ---
+20M | 0.543 | 961 | N/A | spark-submit --executor-cores 1 --conf spark.task.resource.gpu.amount=1 recommender.py ratings_20ml.csv
+20M | 0.545 | 554 | 1.73 | spark-submit --executor-cores 2 --conf spark.task.resource.gpu.amount=0.5 recommender.py ratings_20ml.csv
+20M | 0.545 | 503 | 1.91 | spark-submit --executor-cores 4 --conf spark.task.resource.gpu.amount=0.25 recommender.py ratings_20ml.csv
+20M | 0.545 | 704 | 1.37 | spark-submit --executor-cores 8 --conf spark.task.resource.gpu.amount=0.125 recommender.py ratings_20ml.csv
+
+## GPU Results - Scala
+
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+--- | --- | --- | --- | ---
+20M | 0.5446466876306003 | 139 | N/A | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.5447958012083058 | 109 | 1.28 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 2 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.5432247357623518 | 108 | 1.29 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 4 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.5444981633774427 | 115 | 1.21 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 8 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
 
 
 ## 20M Dataset - GPU
