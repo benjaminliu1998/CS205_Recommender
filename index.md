@@ -22,16 +22,20 @@ A technique mainly used in the early days of recommender systems, content-based 
 Collaborative filtering has been a popular method of designing recommender systems, especially since the Netflix Prize in 2009. (Koren, 2009) At the heart of Collaborative Filtering is the idea that the preferences of one user can be modelled based on information from the preferences of other users by calculating the rating similarity between users. 
 
 ## ALS
-In our application the sparsity and the high dimension of the rating data cause a problem when finding similarity between users. Thus collaborative filtering recommenders rely on matrix factorization to reduce the sparsity and the dimension of the ratings matrix. In this project, we explore the Alternating Least Square (ALS) matrix factorization algorithm. Compared to other matrix factorization algorithms such as Stochastic Gradient Descent, ALS is easier to parallelize, and requires less iterations to reach a good result. The ALS algorithm decomposes the rating matrix A into 2 matrices, W (user factors) and H (movie factors). A user’s rating on a movie will be encoded into latent features in these 2 factored matrices. The idea behind this is that if a user gives good ratings to Avengers, Wonder Woman and Iron Man, these 3 ratings should not be regarded as 3 separate preferences, but a general opinion that the user likes superhero movies. The objective of the ALS algorithm is to minimize the least squares error of the ratings as well as the regularizations (Yu et. al., 2013).
 
 ![](/images/als.png)
 
+In our application the sparsity and the high dimension of the rating data cause a problem when finding similarity between users. Thus collaborative filtering recommenders rely on matrix factorization to reduce the sparsity and the dimension of the ratings matrix. In this project, we explore the Alternating Least Square (ALS) matrix factorization algorithm. Compared to other matrix factorization algorithms such as Stochastic Gradient Descent, ALS is easier to parallelize, and requires less iterations to reach a good result. The ALS algorithm decomposes the rating matrix A into 2 matrices, W (user factors) and H (movie factors). A user’s rating on a movie will be encoded into latent features in these 2 factored matrices. The idea behind this is that if a user gives good ratings to Avengers, Wonder Woman and Iron Man, these 3 ratings should not be regarded as 3 separate preferences, but a general opinion that the user likes superhero movies. 
+
+The objective of the ALS algorithm is to minimize the least squares error of the ratings as well as the regularizations (Yu et. al., 2013).
+
 ![](/images/als_equation.png)
 
-![](/images/als_equation_2.png)
+W and H are updated separately by fixing one and updating the other. Below is the updating step for a row in W.
 
-![](/images/als_equation_3.png)
+$$w_i^* = (H^T_{\Omega_i} H_{\Omega_i} + \lambda I)^-1 H^T \alpha_i$$
 
+The complexity of ALS is $O(|\Omega|k^2 + (m+n)k^3)$, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
 
 # Big Data and Compute Requirements
