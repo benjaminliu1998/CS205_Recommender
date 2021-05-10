@@ -319,7 +319,17 @@ These steps below are for running on the GPU cluster. The only difference for ru
 
    ``` find . ```
    
-   ![image10](https://user-images.githubusercontent.com/37121874/117648887-cbd87400-b15c-11eb-80d9-b3c030c7b79e.png)
+   ![mffwf](https://user-images.githubusercontent.com/37121874/117648995-f62a3180-b15c-11eb-9cf3-28ad5da6e0fc.png)
+
+
+6. Run the command 
+
+   ``` sbt package ```
+   
+   1. This compiles the recommender.scala project (in this case, the build.sbt and recommender.scala script) and packages it into a .jar (Java ARchive) file, which can then be executed by the Scala interpreter
+   2. To make sure it has compiled successfully, you should see something similar to this
+ 
+<img width="602" alt="image5" src="https://user-images.githubusercontent.com/37121874/117649225-43a69e80-b15d-11eb-92a5-d07e6ae42d1d.png">
 
 
 6. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
