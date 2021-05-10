@@ -217,6 +217,13 @@ GPU Cluster Details:
 
 
 ## Setting up a CPU Cluster
+
+GPU Cluster Details:
+   * Release label: emr-6.2.0
+   * Hadoop distribution: Amazon 3.2.1
+   * Applications: Spark 3.0.1, Zeppelin 0.9.0
+   * Master and Core: m4.2xlarge: 32 GiB of memory, 8 vCPUs, EBS-only, 64-bit platform
+
 1. Go to AWS EMR.
 2. Select ‘create cluster’.
 3. Select emr-6.2.0 for release and “Spark” for application, which has Spark 3.0.1, Hadoop 3.2.1.
