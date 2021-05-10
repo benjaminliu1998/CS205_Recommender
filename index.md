@@ -314,7 +314,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
    
    ``` sudo yum install sbt   ```   
  
-4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala] (http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
+4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala](http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
 
    ``` mkdir src; cd src; mkdir main; cd main; mkdir scala; cd scala; mv ../../../recommender.scala .; cd ~ ```
    
@@ -342,7 +342,7 @@ These steps below are for running on the GPU cluster. The only difference for ru
     
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
        
-8. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+8. Upload the dataset *ratings_20ml.csv* to the Hadoop file system
 
    When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
    
