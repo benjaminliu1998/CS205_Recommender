@@ -97,11 +97,11 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 ## Setting up a spark-rapids Cluster with GPU
 
 ### Software and Configuration
-1. Go to AWS EMR.
-2. Select ‘create cluster’.
-3. Select ‘Advanced Options’.
-4. Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
-5. In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
+* Go to AWS EMR.
+* Select ‘create cluster’.
+* Select ‘Advanced Options’.
+* Select emr-6.2.0 for release and ‘Hadoop 3.2.1, Spark 3.0.1, Livy 0.7.0 and JupyterEnterpriseGateway 2.1.0’ for software options.
+* In the “Edit software settings” field enter the following configuration: (Note that spark.task.resource.gpu.amount is set to 1/(number of cores per executor) which allows us to run parallel tasks on the GPU. Therefore, as we dynamically change the number of cores per executor we will also have to change this using the command line.)
 
 ```
 {
@@ -183,12 +183,12 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 
 ![](/images/cluster_2.png)
 
-6. Select the default network and subnet.
-7. Change the instance type to g4dn.2xlarge. Select one core and one task instance.
+* Select the default network and subnet.
+* Change the instance type to g4dn.2xlarge. Select one core and one task instance.
 
 ### General Cluster Settings
-8. Add a cluster name and an S3 bucket to write cluster logs to.
-9. Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
+* Add a cluster name and an S3 bucket to write cluster logs to.
+* Add a custom ‘Bootstrap Actions’ to allow cgroup permissions to YARN on the cluster. You can use the script at this S3 bucket: s3://recommender-s3-bucket/bootstrap.json
 
 	Alternatively, you could use the script below in your own s3 bucket:
 
@@ -200,9 +200,9 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
   sudo chmod a+rwx -R /sys/fs/cgroup/devices
 
 ### Security Settings
-10. Select an EC2 key pair.
-11. In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
-12. Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
+* Select an EC2 key pair.
+* In the “EC2 security groups” tab, confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
+* Select ‘Create Cluster’ and SSH into the Master Node of the Cluster.
 
 [See Spark-Rapids documentation for further details](https://nvidia.github.io/spark-rapids/docs/get-started/getting-started-aws-emr.html)
 
@@ -217,7 +217,7 @@ Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 7. Go to EC2 -> Instances, find your master node instance, and confirm that the security group chosen for the “Master” node allows for SSH access. Follow these instructions to allow inbound SSH traffic if the security group does not allow it yet.
 8. SSH into the Master Node of the Cluster
 
-![](/images/cput_cluster_1.png)
+![](/images/cpu_cluster_1.png)
 
 # Scripts
 There were two main scripts utilized for this project: recommender.py and recommender.scala. As mentioned previously, the scripts were purposely made to be as similar as possible to best compare execution times. Both scripts contain the variable names and documentation except for where the language syntax differs, and are heavily drawn from the Apache Spark MLlib examples [repository](Scala: https://github.com/apache/spark/blob/master/examples/src/main/scala/org/apache/spark/examples/mllib/RecommendationExample.scala) [Python:](https://github.com/apache/spark/blob/master/examples/src/main/python/mllib/recommendation_example.py). The high-level overview of the script is as follows: create a SparkContext, read in the .csv file, map the dataset to an RDD in the form required for the ALS() function. train the ALS on the RDD, make predictions based on the user-movie tuple, and compare the true user-movie ratings with the predicted user-movie ratings from the ALS using mean squared error. We recognize that a more robust ALS prediction model can be made which contains a train-test split, but our focus for this project was execution time comparisons; therefore, we were content as long as each script produced similar mean squared errors depending on the dataset used. 
