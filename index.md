@@ -347,22 +347,11 @@ These steps below are for running on the GPU cluster. The only difference for ru
       
 10. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS Scala Recommender
 
-   ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585779-41532e80-b0e2-11eb-8596-c940cadc6586.png)
+   ![image7](https://user-images.githubusercontent.com/37121874/117649810-f4ad3900-b15d-11eb-9c57-ef44890688ef.png)
 
 
-7. To profile the code and calculate execution time, from the **Summary** tab of your EMR cluster, click on *YARN timeline server* under the *Application user interfaces* section
 
-   <img width="427" alt="Screen Shot 2021-05-09 at 4 03 47 PM" src="https://user-images.githubusercontent.com/37121874/117585746-ff29ed00-b0e1-11eb-9c64-44fda0d612d4.png">
-
-   
-8. You can now calculate the execution time of the recommender system. We see that the script took 10 minutes 17 seconds to run (StartTime: Sat May 8 12:17:23 - FinishTime: Sat May 8 12:27:40). To profile the code, you can click on the *History* link under the *Tracking UI* column header.
-
-   <img width="1391" alt="Screen Shot 2021-05-09 at 4 10 15 PM" src="https://user-images.githubusercontent.com/37121874/117585813-7495bd80-b0e2-11eb-855f-237069b18867.png">
-
-
-9. We can now view how long each function call takes in order to run our script
-
-   <img width="1397" alt="Screen Shot 2021-05-09 at 4 13 20 PM" src="https://user-images.githubusercontent.com/37121874/117585660-8fb3fd80-b0e1-11eb-958b-18423d39432b.png">
+Please see Steps 7-9 of *step-by-step guide for running Python script* for how to profile the code.
 
 
 #Results
