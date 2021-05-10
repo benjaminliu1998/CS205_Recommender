@@ -18,7 +18,7 @@ Explicit recommender systems are based on explicit ratings data where a user has
 
 
 ## Content-based Filtering
-A technique mainly used in the early days of recommender systems, content-based filtering uses item features to recommend other items similar to what the user likes, based on their previous actions or explicit feedback. While the model can make recommendations solely from a single user’s data, this approach struggles when recommending outside the users’ main interests. It also requires a fair amount of [hand-engineering the feature representation of the items to produce a good model](https://developers.google.com/machine-learning/recommendation/content-based/summary), and is typically slower to train than other approaches.
+A technique mainly used in the early days of recommender systems, content-based filtering uses item features to recommend other items similar to what the user likes, based on their previous actions or explicit feedback. While the model can make recommendations solely from a single user’s data, this approach struggles when recommending outside the users’ main interests. It also requires a fair amount of [hand-engineering the feature representation](https://developers.google.com/machine-learning/recommendation/content-based/summary) of the items to produce a good model, and is typically slower to train than other approaches.
 
 ## Collaborative Filtering
 Collaborative filtering has been a popular method of designing recommender systems, especially since the Netflix Prize in 2009. (Koren, 2009) At the heart of Collaborative Filtering is the idea that the preferences of one user can be modelled based on information from the preferences of other users by calculating the rating similarity between users. 
