@@ -360,7 +360,9 @@ Please see Steps 7-9 of *step-by-step guide for running Python script* for how t
 
 # Results Tables
 
-## CPU Results - Python
+## CPU Results
+
+### Python
 
 Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
 --- | --- | --- | --- | ---
@@ -369,16 +371,18 @@ Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python 
 20M | 0.542 | 561 | 1.28 | spark-submit --num-executors 1 --executor-cores 4 recommender.py ratings_20ml.csv
 20M | 0.543 | 482 | 1.49 | spark-submit --num-executors 1 --executor-cores 8 recommender.py ratings_20ml.csv
 
-## CPU Results - Scala
+### Scala
 
-Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Scala Command
 --- | --- | --- | --- | ---
 20M | 0.545 | 139 | N/A | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
 20M | 0.545 | 109 | 1.28 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 2 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
 20M | 0.543 | 108 | 1.29 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 4 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
 20M | 0.544 | 115 | 1.21 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 8 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
 
-## GPU Results - Python
+## GPU Results
+
+### Python
 
 Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
 --- | --- | --- | --- | ---
@@ -387,14 +391,18 @@ Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python 
 20M | 0.545 | 503 | 1.91 | spark-submit --executor-cores 4 --conf spark.task.resource.gpu.amount=0.25 recommender.py ratings_20ml.csv
 20M | 0.545 | 704 | 1.37 | spark-submit --executor-cores 8 --conf spark.task.resource.gpu.amount=0.125 recommender.py ratings_20ml.csv
 
-## GPU Results - Scala
+### Scala
 
-Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
+Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Scala Command
 --- | --- | --- | --- | ---
-20M | 0.5446466876306003 | 139 | N/A | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
-20M | 0.5447958012083058 | 109 | 1.28 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 2 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
-20M | 0.5432247357623518 | 108 | 1.29 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 4 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
-20M | 0.5444981633774427 | 115 | 1.21 | spark-submit --class "RecommenderScala" --num-executors 1 --executor-cores 8 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.543 | 221 | N/A | spark-submit --class "RecommenderScala"
+--executor-cores 1 --conf spark.task.resource.gpu.amount=1 target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.544 | 132 | 1.67 | spark-submit --class "RecommenderScala"
+--executor-cores 2 --conf spark.task.resource.gpu.amount=0.5  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.543 | 104 | 2.13 | spark-submit --class "RecommenderScala"
+--executor-cores 4 --conf spark.task.resource.gpu.amount=0.25  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv
+20M | 0.541 | 147 | 1.50 | spark-submit --class "RecommenderScala"
+--executor-cores 8 --conf spark.task.resource.gpu.amount=0.125  target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv ratings_20ml.csv
 
 
 ## 20M Dataset - GPU
