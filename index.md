@@ -363,9 +363,10 @@ Please see Steps 7-9 of *step-by-step guide for running Python script* for how t
 ## CPU Results
 
 Dataset Size | Mean Squared Error | Execution Time (seconds) | Speedup | Python Command
---- | --- | ---
+--- | --- | --- | --- | ---
 20M | 0.5431788776723693 | 721 | N/A | spark-submit --num-executors 1 --executor-cores 1 recommender.py ratings_20ml.csv
-1 | 2 | 3
+20M | 0.5440616254177953 | 571 | 1.26 | spark-submit --num-executors 1 --executor-cores 2 recommender.py
+
 
 ## 20M Dataset - GPU
 
