@@ -286,7 +286,7 @@ A final bottleneck that was pervasive throughout the testing process was the cos
 
 ## step-by-step guide for running Scala script
 
-#### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
+##### While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
 
 
 These steps below are for running on the GPU cluster. The only difference for running on the CPU cluster is the folder imported in *Step 1*
@@ -304,7 +304,18 @@ These steps below are for running on the GPU cluster. The only difference for ru
 
    ```$ ssh -i ~/.ssh/your_.pem_file_here hadoop@*your_Master_public_DNS_here*```
    
-3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+3. Download sbt to the EMR cluster
+
+   ``` curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo 
+       sudo yum install sbt
+   ```
+ 
+4. Create the appropriate directory structure for the .sbt file to compile based on the [Spark tutorial “Self Contained Applications” with Scala] (http://spark.apache.org/docs/latest/quick-start.html#self-contained-applications)
+
+   ``` mkdir src; cd src; mkdir main; cd main; mkdir scala; cd scala; mv ../../../recommender.scala .; cd ~ ```
+   
+
+6. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
    1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
