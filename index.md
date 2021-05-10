@@ -218,7 +218,7 @@ GPU Cluster Details:
 
 ## Setting up a CPU Cluster
 
-GPU Cluster Details:
+CPU Cluster Details:
    * Release label: emr-6.2.0
    * Hadoop distribution: Amazon 3.2.1
    * Applications: Spark 3.0.1, Zeppelin 0.9.0
