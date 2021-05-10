@@ -35,7 +35,7 @@ The objective of the ALS algorithm is to minimize the least squares error of the
 
 W and H are updated separately by fixing one and updating the other. Below is the updating step for a row in W.
 
-$$w_i^* = (H^T_{\Omega_i} H_{\Omega_i} + \lambda I)^-1 H^T \alpha_i$$
+![](/images/als_equation_1.png)
 
 The complexity of ALS is $O(|\Omega|k^2 + (m+n)k^3)$, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
