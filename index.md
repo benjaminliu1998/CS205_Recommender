@@ -362,7 +362,7 @@ Scala is designed primarily to distribute data across nodes. Therefore, speedup 
 We can see that the difference between Scala and Python is magnified as the datasets become larger. While the difference is less significant at the 3 MB level (the 100K dataset), it becomes very marked once we get to the 300+ MB level (the 20M dataset and 25M dataset). This suggests that the Scala implementation does indeed scale better in terms of throughput than the PySpark implementation. However, it is noticeable that the throughput declines from the 20M to 25M dataset. Thus it would be useful in future work to test whether this is a continuing decline by utilizing a larger dataset to observe if there is decreasing marginal scalability for the Scala implementation. One important point to note as well is that this decreasing scalability may be a result of the type of the application, as the fact that ALS Matrix Factorization does not scale well to large dataset sizes is widely observed in research. (Yu et. al., 2013)
 
 |  Dataset Size | Python (runtime/ throughput) | Scala (runtime/ throughput)| 
-|:--:|:--:|:--:|:--:|
+|:--:|:--:|:--:|
 | 100k (2.3 MB) | 48 s, 0.048 MB/s |  42 s, 0.054 MB/s | 
 | 1M (12 MB) | 66 s, 0.18 MB/s |  47 s, 0.26 MB/s |
 | 20M (305.2 MB) | 632 s, 0.48 MB/s |  156 s, 1.96 MB/s |
