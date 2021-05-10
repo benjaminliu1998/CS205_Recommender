@@ -258,7 +258,10 @@ Regarding the scripts, there was one particular spot that we could not exactly m
 
 A final bottleneck that was pervasive throughout the testing process was the cost for GPUs. A g4dn.2xlarge EC2 instance costs $0.752/hr for [On-Demand pricing](https://aws.amazon.com/ec2/instance-types/g4/), so we did our best to be cognizant of our limited budget. However, each member unfortunately exceeded the $100 credit limit in order to produce the most comprehensive results to showcase our project.
 
-## step-by-step guide for running Python script
+## Step-by-step guide for running Python script
+
+Note: we recommend that you hard code the commands, instead of copy and paste them from the website.
+
 1. From the GitHub repository, copy over the python script to the EMR cluster
 
    ```$ scp -i ~/.ssh/your_.pem_file_here python/recommender.py  hadoop@your_Master_public_DNS_here:/home/hadoop```
@@ -307,6 +310,8 @@ A final bottleneck that was pervasive throughout the testing process was the cos
 
 
 ## step-by-step guide for running Scala script
+
+Note: we recommend that you hard code the commands, instead of copy and paste them from the website.
 
 While the setup for running a Python script on the EMR cluster is very straightforward, the process for running a Scala script requires a few more steps; however, as you’ll see shortly during the results section, it is well worth it.
 
