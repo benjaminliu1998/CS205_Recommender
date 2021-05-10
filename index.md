@@ -35,9 +35,13 @@ The objective of the ALS algorithm is to minimize the least squares error of the
 
 W and H are updated separately by fixing one and updating the other. Below is the updating step for a row in W.
 
-![](/images/als_equation_1.png)
+![](/images/als_equation_2.png)
 
-The complexity of ALS is $O(|\Omega|k^2 + (m+n)k^3)$, where $\Omega$ is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the $H^TH$ in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
+The complexity of ALS is 
+
+![](/images/als_equation_3.png)
+
+, where Ω is the set of indices for observed ratings. For updating each row of W or H, we need quadratic time to compute the H^T\*H in the updating step, and cubic time to solve the least squares. Thus we have the overall complexity in this form. Though ALS has higher complexity per iteration than some other matrix factorization algorithms, it’s parallelizability, less iteration requirement to achieve good factorization results, and implementation in Spark MLlib make it easy to scale up the dataset.
 
 
 # Big Data and Compute Requirements
@@ -414,7 +418,7 @@ Overall it does not seem that using a GPU provided as much speed-up as we expect
 
 ![](/images/graph_1.png)
 
-We ran the Python and Scala implementations on GPU and CPU using 1 executor. We see that when the program is run serially with 1 thread, CPU is faster than GPU for both Scala and Python. If we look at the runtime comparison plots, using more cores does not decrease GPU execution time significantly against CPU execution time. This makes sense since the CPU consists of cores optimized for serial processing which perform well on a single task run on 1 executor and 1 core, while GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks. We also see that Scala is significantly faster than Python, as we’ll discuss shortly.
+We ran the Python and Scala implementations on GPU and CPU using 1 executor. We see that when the program is run serially with 1 thread, CPU is faster than GPU for both Scala and Python. If we look at the runtime comparison plots, using more cores does not decrease GPU execution time significantly against CPU execution time. This makes sense since the CPU consists of cores optimized for serial processing which perform well on a single task run on 1 executor and 1 core, while GPU consists of thousands of cores that are optimized for parallel computing of multiple tasks (Olena, 2018). We also see that Scala is significantly faster than Python, as we’ll discuss shortly.
 
 ![](/images/graph_2.png)
 
@@ -469,6 +473,8 @@ Gandhi, P. (2018) [‘Apache Spark: Python vs. Scala’, KD.](https://www.kdnugg
 Harper, F.M. & Konstan, J. A., (2015) [‘The MovieLens Datasets: History and Context’, ACM Transactions on Interactive Intelligent Systems](https://dl.acm.org/doi/10.1145/2827872)  
 
 Koren, Y. [The Belkor Solution to the Netflix Grand Prize](https://www.netflixprize.com/assets/GrandPrize2009_BPC_BellKor.pdf)
+
+Olena (2018) [GPU vs CPU Computing: What to choose?](https://medium.com/altumea/gpu-vs-cpu-computing-what-to-choose-a9788a2370c4#:~:text=CPUs%20and%20GPUs%20process%20tasks%20in%20different%20ways.&text=That%20is%20because%20a%20CPU,range%20of%20tasks%20is%20wide)
 
 Qiu, Y. (2016) [‘Recosystem: recommender system using parallel matrix factorization’](https://statr.me/2016/07/recommender-system-using-parallel-matrix-factorization/)
 
