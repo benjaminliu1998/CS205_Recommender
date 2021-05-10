@@ -244,13 +244,10 @@ A final bottleneck that was pervasive throughout the testing process was the cos
    
 3. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
-   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+    If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
-       
-   2. If uploading from the GitHub repository
-   
-       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
+
        
 4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
@@ -332,27 +329,23 @@ These steps below are for running on the GPU cluster. The only difference for ru
 <img width="602" alt="image5" src="https://user-images.githubusercontent.com/37121874/117649225-43a69e80-b15d-11eb-92a5-d07e6ae42d1d.png">
 
 
-6. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
+7. Now, upload the MovieLens dataset you want to use to the EMR cluster; for this example, we will upload the Movielens 20mL dataset
 
-   1. If uploading the dataset from the public S3 bucket to the EMR cluster home repository
+   If uploading the dataset from the public S3 bucket to the EMR cluster home repository
     
       ``` $ aws s3 cp s3://als-recommender-data/data/ratings_20ml.csv .```
        
-   2. If uploading from the GitHub repository
-   
-       ```$ scp -i ~/.ssh/your_.pem_file_here data/mldataset.csv  hadoop@y*our_Master_public_DNS_here*:/home/hadoop```
-       
-4. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
+8. Upload the dataset 'ratings_20ml.csv' to the Hadoop file system
 
    When running the command ```$ hadoop fs -ls```, you should see something similar to this: 
    
    ![Screen Shot 2021-05-09 at 3 50 19 PM](https://user-images.githubusercontent.com/37121874/117585088-8bd2ac00-b0de-11eb-9bfa-f1d05b9c609a.png)
 
-5. You should now be able to run the below code and see results
+9. You should now be able to run the below code and see results
 
-      ``` spark-submit recommender.py ratings_20ml.csv ```
+      ``` spark-submit --class "RecommenderScala" target/scala-2.12/scala-recommender_2.12-1.0.jar ratings_20ml.csv ```
       
-6. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS PySpark Recommender
+10. When the code has completed, you should be able to see the Mean Squared Error produced by the ALS Scala Recommender
 
    ![Screen Shot 2021-05-09 at 3 56 13 PM](https://user-images.githubusercontent.com/37121874/117585779-41532e80-b0e2-11eb-8596-c940cadc6586.png)
 
