@@ -91,14 +91,13 @@ The first idea we got for creating a recommender system that utilized GPUs on a 
 
 # How to Replicate our Code
 
-Cluster Details
-Release label:emr-6.2.0
-Hadoop distribution:Amazon 3.2.1
-Applications:Spark 3.0.1, Livy 0.7.0, JupyterEnterpriseGateway 2.1.0
-Hardware:
-Master: m5.xlarge, 4 vCore, 16 GiB memory, EBS Storage:64 GiB 
-Core: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
-Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
+Cluster Details:
+   * Release label:emr-6.2.0
+   * Hadoop distribution:Amazon 3.2.1
+   * Applications:Spark 3.0.1, Livy 0.7.0, JupyterEnterpriseGateway 2.1.0
+   * Master: m5.xlarge, 4 vCore, 16 GiB memory, EBS Storage:64 GiB 
+   * Core: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
+   * Task: g4dn.2xlarge, 8 vCore, 32 GiB memory, 225 SSD GB storage
 
 ## Setting up a spark-rapids Cluster with GPU
 
